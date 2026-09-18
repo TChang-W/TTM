@@ -13,10 +13,10 @@ $$
 where $t^*$ is the retrospective time, $A$ is a treatment indicator, $X$ are baseline covariates, and $\epsilon$ is a random error term. The retrospective time is defined as
 
 $$
-t^* = OS\_time - t_{pros},
+t^* = \mathrm{OS\_time} - \mathrm{t\_pros},
 $$
 
-where $OS\_time$ is the observed survival time and $t_{pros}$ is the prospective measurement time. This makes it natural to study how a longitudinal outcome changes as a subject approaches death.
+where $\mathrm{OS\_time}$ is the observed survival time and $\mathrm{t\_pros}$ is the prospective measurement time. This makes it natural to study how a longitudinal outcome changes as a subject approaches death.
 
 The package supports two model interfaces:
 
@@ -72,7 +72,7 @@ A typical analysis uses:
 
 The default entry point is `TTM()`. It fits a retrospective-time model using a natural-spline basis for time and selects the number of internal knots from `n_inner_knot_list` using the supplied model-selection criterion.
 
-The original `TTM()` implementation is the package's primary model-fitting function. It begins by cleaning the long-format data and constructing retrospective time as $t^* = OS\_time - t_{pros}$. It then fits a Cox model for dropout, computes the corresponding subject-level weights, and uses a weighted GEE among observations from subjects with observed death events to estimate the baseline trajectory $\beta_\mu(t^*)$ and the treatment effect trajectory $\beta_A(t^*)$. Uncertainty is obtained with delete-group jackknife replicates.
+The original `TTM()` implementation is the package's primary model-fitting function. It begins by cleaning the long-format data and constructing retrospective time as $t^* = \mathrm{OS\_time} - \mathrm{t\_pros}$. It then fits a Cox model for dropout, computes the corresponding subject-level weights, and uses a weighted GEE among observations from subjects with observed death events to estimate the baseline trajectory $\beta_\mu(t^*)$ and the treatment effect trajectory $\beta_A(t^*)$. Uncertainty is obtained with delete-group jackknife replicates.
 
 The most important arguments are:
 
