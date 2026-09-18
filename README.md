@@ -6,11 +6,15 @@ TTM R package for terminal trend model.
 
 The TTM package fits a retrospective-time longitudinal model for outcomes measured before death using weighted generalized estimating equations (WGEE). The main idea is to model the longitudinal outcome on a retrospective time scale,
 
-$$Y = \beta_\mu(t^*) + A \times \beta_A(t^*) + \beta_X^T X + \epsilon,$$
+$$
+Y = \beta_\mu(t^*) + A \times \beta_A(t^*) + \beta_X^T X + \epsilon,
+$$
 
 where $t^*$ is the retrospective time, $A$ is a treatment indicator, $X$ are baseline covariates, and $\epsilon$ is a random error term. The retrospective time is defined as
 
-$$t^* = OS\_time - t_{pros},$$
+$$
+t^* = OS\_time - t_{pros},
+$$
 
 where $OS\_time$ is the observed survival time and $t_{pros}$ is the prospective measurement time. This makes it natural to study how a longitudinal outcome changes as a subject approaches death.
 
