@@ -1,0 +1,30 @@
+Package: TTM
+Type: Package
+Title: Fit terminal time model in retrospective time scale
+Version: 0.0.90
+Authors@R: c(person(given = "Tingchang",
+           family = "Wang",
+           role = c("aut"),
+           email = "twang5@ufl.edu"),
+           person(given = "Zhigang",
+           family = "Li",
+           role = c("aut", "cre"),
+           email = "zhigang.li@ufl.edu")
+           )
+Maintainer: Tingchang Wang <twang5@ufl.edu>
+Description: Fits retrospective-time longitudinal models for terminal trend
+    analysis using weighted generalized estimating equations and related joint
+    modeling tools. The package provides functions to estimate spline-based
+    baseline and treatment effect trajectories on the retrospective time scale,
+    obtain pointwise confidence intervals, and visualize fitted trajectories.
+License: GPL-2
+Depends: R (>= 4.4.0)
+Imports: Rcpp (>= 1.0.9), NlcOptim, geer, geepack, doParallel, foreach, mathjaxr, stats, parallel, tidyr, lme4, dplyr, magrittr, ggplot2, survival, utils
+Suggests: knitr, rmarkdown
+LazyData: true
+VignetteBuilder: knitr
+RdMacros: mathjaxr
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.3.3
+Encoding: UTF-8
+NeedsCompilation: no

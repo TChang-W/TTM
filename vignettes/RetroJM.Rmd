@@ -1,0 +1,165 @@
+---
+title: "Introduction to RetroJM"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{Introduction to RetroJM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  comment = "#>"
+)
+```
+
+
+# Overview
+
+RetroJM fits a two-stage retrospective joint model for longitudinal and survival data. The main idea is to analyze the longitudinal outcome on a retrospective timescale, where time is measured backward from death rather than forward from baseline.
+
+This perspective is useful when the scientific question concerns how a longitudinal outcome, such as quality of life, changes as a subject approaches death.
+
+The longitudinal model is: 
+$$
+Y_i(t^*)=\beta_{\mu}(t^*)+A_i\beta_A(t^*)+X_i^T\psi_X+W_ib_i+\epsilon_i(t^*)
+$$
+where
+
+$t^*=D-t$, $D$ is death time and $t$ isthe prospective observation time.
+
+The survival component is modeled using a Cox proportional hazards model. The hazard for death: 
+$$
+\lambda_i(t)=\exp{\Big(\alpha_0(t)+A_i\alpha_A(t)\Big)},
+$$
+
+For subjects with observed death times, the retrospective timescale is directly available. For censored subjects, death times are not observed and are multiply imputed from the fitted survival model. The longitudinal model is then fit on each imputed dataset, and the final estimates are pooled across imputations.
+
+# Package installation 
+
+To install the released version from CRAN, run:
+
+```{r eval=FALSE}
+install.packages("RetroJM", repos = "http://cran.us.r-project.org")
+```
+
+To install the development version from GitHub, run:
+```{r eval=FALSE}
+devtools::install_github("TChang-W/RetroJM")
+```
+
+# Main function: RetroJM()
+
+The input data should be in long format, with repeated longitudinal measurements for each subject. The dataset should contain subject identifiers, longitudinal measurements, observation times, treatment assignment, baseline covariates if applicable, event or censoring times, and the death indicator.
+
+## Arguments
+
+The most important arguments are:
+
+- `data_long`: The dataset used in analysis in long format.
+It should contain longitudinal measurement, measurement time, ID for subjects, covariates of interest, event/censoring time, an indicator
+for death status, and random effects by specification.
+
+- `id`: Name of ID variable.
+
+- `treatment`: Name of parameter of interest. Have to be a binary variable coded as 0/1, 
+such as control/treatment.
+
+- `outcome`: Name of longitudinal measurement.
+
+- `covaraites`: Name of covariates. Default is NULL, meaning no covariates. 
+
+- `os_time`: Name of variable for event/censoring time. 
+
+- `death`: Name of indicator variable for death status. 
+
+- `t_pros`: Name of observed time variables. If the input data is long format, it should 
+be a single character; If the input is wide format, it should be a character vector. It should have same length as "outcome". 
+
+
+- `random_effects`: Names of the random effects to be controlled.  
+
+- `n_impute`: The number of imputations performed per censored subject.
+
+- `n_inner_knots`: The number of inner knots used to approximate the trajectories beta_mu and beta_A
+
+
+# Examples
+
+## Dataset
+The example datasets `Retro_data` is included in the package. They could be accessed by: 
+```{r}
+library(RetroJM)
+
+data(Retro_data)
+```
+The `Retro_data` is a long format data. It contains 100 subjects, 1 longitudinal measurement at 3 time points. 
+
+From the data, the name of longitudinal measurement is: `Y`, name of measured time are: `t_pros`, name of treatment assignment is: `A`, name of event/censoring time is `OS_time`, name of covariates are: `X1, X2`, name of ID variable is: `id`, name of death status is: `death`. We want to include a random intercept and a random slope for `A`: 
+
+## Fitting the model
+```{r}
+fit <- RetroJM(
+   data_long = Retro_data,
+   id = "id",
+   treatment = "A",
+   outcome = "Y",
+   covariates = c("X1", "X2"),
+   os_time = "OS_time",
+   death = "death",
+   t_pros = "t_pros",
+   random_effects = c("1", "A"),
+   n_impute = 10,
+   n_inner_knot = 3
+ )
+```
+
+# Output
+
+The fitted object returned by RetroJM() contains the fitted survival model, the imputed death times, the spline specification, and the pooled longitudinal model results.
+
+## Pooled results
+The pooled longitudinal results can be accessed by:
+
+```{r}
+fit$pooled_longitudinal_model
+```
+
+## Baseline trajectory
+
+To plot the estimated baseline trajectory $\beta_\mu(t*)$ with pointwise confidence intervals:
+ 
+```{r}
+plot_beta_mu(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
+```
+
+To plot the estimated baseline trajectory $\beta_A(t*)$ with pointwise confidence intervals:
+ 
+```{r}
+plot_beta_A(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
+```
+
+## Extract trajectory estimates at specific time points
+To evaluate the baseline trajectory $\beta_\mu(t*)$ at selected retrospective times:
+
+```{r}
+get_beta_mu(new_times = 1:10, RetroJM_results = fit, conf.level = 0.95)
+```
+
+To evaluate the baseline trajectory $\beta_A(t*)$ at selected retrospective times:
+
+```{r}
+get_beta_A(new_times = 1:10, RetroJM_results = fit, conf.level = 0.95)
+```
+
+These functions return the estimated trajectory, pointwise standard error, and pointwise confidence interval at each requested time point.
+
+## Interpreting the trajectories
+The function $\beta_\mu(t*)$ represents the estimated baseline retrospective trajectory, while $\beta_A(t*)$ represents the estimated treatment effect as a function of retrospective time.
+
+These curves help describe how the longitudinal outcome changes as subjects approach death, and how that pattern differs by treatment group.
+
+# Summary
+RetroJM provides a practical framework for retrospective joint modeling when death times are missing for censored subjects. By combining survival-based imputation with mixed-effects modeling, the package allows users to estimate and visualize longitudinal trajectories on the timescale of time before death
