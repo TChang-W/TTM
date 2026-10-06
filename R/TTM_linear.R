@@ -1,4 +1,4 @@
-##' Fit a weighted GEE terminal trend model on the retrospective time scale
+##' Fit a weighted GEE terminal trend model with a linear spline basis
 ##'
 ##' @description
 ##' Fits a retrospective-time longitudinal model using weighted generalized
@@ -40,6 +40,7 @@
 ##' @param spline_type Character scalar specifying the type of spline basis to
 ##'   use. Options are `"ns"` for natural splines or `"bs"` for B-splines.
 ##'   The default is `"bs"`.
+##' @param criteria Currently unused; accepted for consistency with `TTM()`.
 ##'
 ##' @details
 ##' The fitted longitudinal model includes:
@@ -92,14 +93,14 @@
 ##' @importFrom geer geewa
 ##'
 ##' @examples
-##' \dontrun{
+##' \donttest{
 ##' library(TTM)
 ##' data("TTM_data", package = "TTM")
 ##'
 ##' fit <- TTM_linear(
 ##'   data_long = TTM_data,
 ##'   id = "id",
-##'   treatment = NULL,
+##'   treatment = "A",
 ##'   outcome = "Y",
 ##'   covariates = c("X1", "X2"),
 ##'   os_time = "OS_time",
@@ -126,8 +127,8 @@
 ##'   conf.level = 0.95
 ##' )
 ##'
-##' get_beta_mu(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
-##' get_beta_A(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
+##' get_beta_mu(new_times = 1:10, results = fit, conf.level = 0.95)
+##' get_beta_A(new_times = 1:10, results = fit, conf.level = 0.95)
 ##' }
 ##'
 ##' @export

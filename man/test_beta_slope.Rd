@@ -2,9 +2,7 @@
 % Please edit documentation in R/test_slope.R
 \name{test_beta_slope}
 \alias{test_beta_slope}
-\title{IMPORTANT: This function is for TTM_linear object with B-spline only.
-Compute the change in slope of the either baseline trajectory or treatment-effect
-around a knot and test its significance.}
+\title{Test for a change in slope at a knot of a linear-spline trajectory}
 \usage{
 test_beta_slope(new_times, fit, var_name)
 }
@@ -12,16 +10,37 @@ test_beta_slope(new_times, fit, var_name)
 \item{new_times}{Numeric vector of knot positions. Needs to be of length 3 where the
 middle value is the knot and the other two values are slightly before and after the knot.}
 
-\item{fit}{A fitted `TTM_linear()` object}
+\item{fit}{A fitted \code{TTM_linear()} object}
 
-\item{var_name}{Either `"X0"` (baseline trajectory beta_mu) or
-`"A"` (treatment effect trajectory beta_A)}
+\item{var_name}{Either \code{"X0"} (baseline trajectory beta_mu) or
+\code{"A"} (treatment effect trajectory beta_A)}
 }
 \value{
-A data.frame with slope1, slope2, diff, se_diff, p_value
+A data.frame with columns \code{slope1} (slope before the knot),
+\code{slope2} (slope after the knot), \code{diff} (\code{slope2 - slope1}), \code{se_diff}
+(standard error of \code{diff}), and \code{p_value} (two-sided Wald test p-value).
 }
 \description{
-IMPORTANT: This function is for TTM_linear object with B-spline only.
-Compute the change in slope of the either baseline trajectory or treatment-effect
-around a knot and test its significance.
+Computes the change in slope of either the baseline trajectory or the
+treatment-effect trajectory around a knot and tests its significance.
+This function is for \code{TTM_linear()} fits with a B-spline basis
+(\code{spline_type = "bs"}) only.
+}
+\examples{
+\donttest{
+fit_linear <- TTM_linear(
+  data_long = TTM_data,
+  id = "id",
+  treatment = "A",
+  outcome = "Y",
+  covariates = c("X1", "X2"),
+  os_time = "OS_time",
+  event = "event",
+  t_pros = "t_pros",
+  knots = 6,
+  spline_type = "bs"
+)
+test_beta_slope(new_times = c(5, 6, 7), fit = fit_linear, var_name = "X0")
+test_beta_slope(new_times = c(5, 6, 7), fit = fit_linear, var_name = "A")
+}
 }

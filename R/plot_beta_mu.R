@@ -47,7 +47,7 @@
 ##' `TTM()`, `get_beta_mu()`, `plot_beta_A()`
 ##'
 ##' @examples
-##' \dontrun{
+##' \donttest{
 ##' fit <- TTM(
 ##'   data_long = TTM_data,
 ##'   id = "id",
@@ -159,8 +159,8 @@ plot_beta_mu <- function(results, xlim = NULL, conf.level = 0.95) {
     )))
   }
   if(results$method == "RetroJM"){
-    Boundary.knots <- RetroJM_results$spline_boundary_knots
-    knots <- RetroJM_results$spline_inner_knots
+    Boundary.knots <- results$spline_boundary_knots
+    knots <- results$spline_inner_knots
     if (is.null(xlim)) {
       a <- Boundary.knots[1]
       b <- tail(knots, 1)
@@ -178,8 +178,8 @@ plot_beta_mu <- function(results, xlim = NULL, conf.level = 0.95) {
       length.out = 1000
     )
 
-    beta_lmer <- RetroJM_results$pooled_longitudinal_model$fixed_effects
-    beta_lmer_vcov <- RetroJM_results$pooled_longitudinal_model$fixed_effects_vcov
+    beta_lmer <- results$pooled_longitudinal_model$fixed_effects
+    beta_lmer_vcov <- results$pooled_longitudinal_model$fixed_effects_vcov
 
     beta_mu_vars <- c("(Intercept)", grep("^X_spline", names(beta_lmer), value = TRUE))
     beta_mu_coef <- beta_lmer[beta_mu_vars]

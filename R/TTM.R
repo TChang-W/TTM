@@ -38,6 +38,10 @@
 ##' @param corstr Character scalar specifying the working correlation structure
 ##'   passed to `geepack::geeglm()`, such as `"independence"`, `"exchangeable"`,
 ##'   or `"ar1"`.
+##' @param criteria Character scalar naming the model selection criterion,
+##'   computed by `geer::geecriteria()`, used to choose the number of internal
+##'   knots from `n_inner_knot_list`. One of `"QIC"`, `"CIC"`, `"RJC"`,
+##'   `"QICu"`, or `"GESSC"`; the candidate with the smallest value is selected.
 ##'
 ##' @details
 ##' The fitted longitudinal model includes:
@@ -90,7 +94,7 @@
 ##' @importFrom geer geewa
 ##'
 ##' @examples
-##' \dontrun{
+##' \donttest{
 ##' library(TTM)
 ##' data("TTM_data", package = "TTM")
 ##'
@@ -123,8 +127,8 @@
 ##'   conf.level = 0.95
 ##' )
 ##'
-##' get_beta_mu(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
-##' get_beta_A(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
+##' get_beta_mu(new_times = 1:10, results = fit, conf.level = 0.95)
+##' get_beta_A(new_times = 1:10, results = fit, conf.level = 0.95)
 ##' }
 ##'
 ##' @export
@@ -158,14 +162,15 @@ TTM <- function(data_long,
   if (!is.numeric(n_inner_knot_list) || any(n_inner_knot_list < 1) ) {
     stop("`n_inner_knot_list` must be a integer vector greater than or equal to 1.")
   }
-  if(is.null(treatment)){
-    treatment = "A"
-    data_input$A = 0
-  }
+
 
   data_input <- data_long
   data_input$death <- as.integer(data_input[[event]] == 1)
   data_input$dropout <- as.integer(data_input[[event]] == 2)
+  if(is.null(treatment)){
+    treatment = "A"
+    data_input$A = 0
+  }
 
   data_out <- clean_data(
     data_input = data_input,

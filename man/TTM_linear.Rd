@@ -2,7 +2,7 @@
 % Please edit documentation in R/TTM_linear.R
 \name{TTM_linear}
 \alias{TTM_linear}
-\title{Fit a weighted GEE terminal trend model on the retrospective time scale}
+\title{Fit a weighted GEE terminal trend model with a linear spline basis}
 \usage{
 TTM_linear(
   data_long,
@@ -21,10 +21,10 @@ TTM_linear(
 )
 }
 \arguments{
-\item{data_long}{A long-format `data.frame` with one row per subject-visit.
-The data must include the columns specified by `id`, `treatment`,
-`outcome`, `covariates`, `os_time`, `event`, and `t_pros`, as well as
-`censoring_time` and `death_time`.}
+\item{data_long}{A long-format \code{data.frame} with one row per subject-visit.
+The data must include the columns specified by \code{id}, \code{treatment},
+\code{outcome}, \code{covariates}, \code{os_time}, \code{event}, and \code{t_pros}, as well as
+\code{censoring_time} and \code{death_time}.}
 
 \item{id}{Character scalar giving the subject identifier column name.}
 
@@ -39,7 +39,7 @@ Can only accept NULL or binary group indicator.}
 name.}
 
 \item{event}{Character scalar giving the event indicator column name.
-The function assumes `1 = death`, `2 = dropout`, and all other values are
+The function assumes \code{1 = death}, \code{2 = dropout}, and all other values are
 treated as neither death nor dropout.}
 
 \item{t_pros}{Character scalar giving the prospective follow-up time column
@@ -52,40 +52,42 @@ jackknife groups used to estimate coefficient variability. Must be greater
 than 1.}
 
 \item{corstr}{Character scalar specifying the working correlation structure
-passed to `geepack::geeglm()`, such as `"independence"`, `"exchangeable"`,
-or `"ar1"`.}
+passed to \code{geepack::geeglm()}, such as \code{"independence"}, \code{"exchangeable"},
+or \code{"ar1"}.}
 
 \item{spline_type}{Character scalar specifying the type of spline basis to
-use. Options are `"ns"` for natural splines or `"bs"` for B-splines.
-The default is `"bs"`.}
+use. Options are \code{"ns"} for natural splines or \code{"bs"} for B-splines.
+The default is \code{"bs"}.}
+
+\item{criteria}{Currently unused; accepted for consistency with \code{TTM()}.}
 }
 \value{
 A named list with components:
 \describe{
-  \item{dropout_formula}{The formula used to fit the dropout Cox model.}
-  \item{dropout_model}{A fitted `survival::coxph` object for dropout.}
-  \item{longitudinal_formula}{The formula used in the weighted GEE fit.}
-  \item{weighted_gee}{A list containing:
-    \describe{
-      \item{fixed_effects}{Jackknife mean of the GEE coefficient estimates.}
-      \item{fixed_effects_vcov}{Delete-group jackknife covariance matrix for
-      `fixed_effects`.}
-      \item{fixed_effects_sd}{Standard errors from
-      `fixed_effects_vcov`.}
-      \item{jackknife_coefficients}{Matrix of leave-group-out coefficient
-      estimates, one row per jackknife replicate.}
-    }
-  }
-  \item{spline_boundary_knots}{Boundary knots used for the retrospective-time
-  natural spline basis.}
-  \item{spline_inner_knots}{Internal knots used for the retrospective-time
-  natural spline basis.}
-  \item{n_inner_knots}{The requested number of internal spline knots.}
-  \item{variable_name_map}{Mapping between original variable names and the
-  standardized names created during preprocessing.}
-  \item{weights}{A `data.frame` containing subject-level analysis weights.}
-  \item{method}{Character string identifying the fitted method, equal to
-  `"TTM"`.}
+\item{dropout_formula}{The formula used to fit the dropout Cox model.}
+\item{dropout_model}{A fitted \code{survival::coxph} object for dropout.}
+\item{longitudinal_formula}{The formula used in the weighted GEE fit.}
+\item{weighted_gee}{A list containing:
+\describe{
+\item{fixed_effects}{Jackknife mean of the GEE coefficient estimates.}
+\item{fixed_effects_vcov}{Delete-group jackknife covariance matrix for
+\code{fixed_effects}.}
+\item{fixed_effects_sd}{Standard errors from
+\code{fixed_effects_vcov}.}
+\item{jackknife_coefficients}{Matrix of leave-group-out coefficient
+estimates, one row per jackknife replicate.}
+}
+}
+\item{spline_boundary_knots}{Boundary knots used for the retrospective-time
+natural spline basis.}
+\item{spline_inner_knots}{Internal knots used for the retrospective-time
+natural spline basis.}
+\item{n_inner_knots}{The requested number of internal spline knots.}
+\item{variable_name_map}{Mapping between original variable names and the
+standardized names created during preprocessing.}
+\item{weights}{A \code{data.frame} containing subject-level analysis weights.}
+\item{method}{Character string identifying the fitted method, equal to
+\code{"TTM"}.}
 }
 }
 \description{
@@ -115,18 +117,18 @@ death time.
 
 Dropout weights are derived from a Cox model for the hazard of dropout and
 empirical estimates of censoring. The GEE fit is obtained with weights.
-Only observations from subjects with `event == 1` are used in the final
+Only observations from subjects with \code{event == 1} are used in the final
 longitudinal model fit.
 }
 \examples{
-\dontrun{
+\donttest{
 library(TTM)
 data("TTM_data", package = "TTM")
 
 fit <- TTM_linear(
   data_long = TTM_data,
   id = "id",
-  treatment = NULL,
+  treatment = "A",
   outcome = "Y",
   covariates = c("X1", "X2"),
   os_time = "OS_time",
@@ -153,8 +155,8 @@ plot_beta_A(
   conf.level = 0.95
 )
 
-get_beta_mu(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
-get_beta_A(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
+get_beta_mu(new_times = 1:10, results = fit, conf.level = 0.95)
+get_beta_A(new_times = 1:10, results = fit, conf.level = 0.95)
 }
 
 }

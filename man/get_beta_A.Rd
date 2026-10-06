@@ -10,29 +10,29 @@ get_beta_A(new_times, results, conf.level = 0.95)
 \item{new_times}{Numeric vector of retrospective time points
 \eqn{t^*} at which to evaluate the treatment effect trajectory.}
 
-\item{results}{A fitted object returned by `TTM()` or `RetroJM()`.
+\item{results}{A fitted object returned by \code{TTM()} or \code{RetroJM()}.
 The object must contain spline knot information and the estimated fixed
 effects with their covariance matrix.}
 
 \item{conf.level}{Numeric scalar giving the confidence level for pointwise
-confidence intervals. Must be strictly between `0` and `1`.}
+confidence intervals. Must be strictly between \code{0} and \code{1}.}
 }
 \value{
 A named list with components:
 \describe{
-  \item{time_grid}{The input retrospective time points in `new_times`.}
-  \item{estimate}{Estimated treatment effect values
-  \eqn{\beta_A(t^*)}.}
-  \item{standard_error}{Pointwise standard errors of the estimated treatment
-  effect trajectory.}
-  \item{CI.lower}{Lower pointwise confidence limits.}
-  \item{CI.upper}{Upper pointwise confidence limits.}
+\item{time_grid}{The input retrospective time points in \code{new_times}.}
+\item{estimate}{Estimated treatment effect values
+\eqn{\beta_A(t^*)}.}
+\item{standard_error}{Pointwise standard errors of the estimated treatment
+effect trajectory.}
+\item{CI.lower}{Lower pointwise confidence limits.}
+\item{CI.upper}{Upper pointwise confidence limits.}
 }
 }
 \description{
 Computes the estimated treatment effect trajectory,
 \eqn{\beta_A(t^*)}, at user-supplied retrospective time points from a fitted
-`TTM()` or `RetroJM()` object.
+\code{TTM()} or \code{RetroJM()} object.
 
 The trajectory is formed from the treatment main effect together with the
 treatment-by-spline interaction terms in the fitted retrospective-time
@@ -50,15 +50,14 @@ E[Y(t^*)] = \beta_X^\top X +
 
 this function evaluates \eqn{\beta_A(t^*)} at specified \eqn{t^*}
 
-
 The spline basis is reconstructed using the boundary knots and internal knots
-stored in `results`, so the supplied `new_times` should be on the same
+stored in \code{results}, so the supplied \code{new_times} should be on the same
 retrospective-time scale as used when fitting the model.
 
 Confidence intervals are pointwise, not simultaneous.
 }
 \examples{
-\dontrun{
+\donttest{
 fit <- TTM(
   data_long = TTM_data,
   id = "id",
@@ -83,5 +82,5 @@ trt_eff$CI.upper
 
 }
 \seealso{
-`TTM()`, `get_beta_mu()`, `plot_beta_A()`
+\code{TTM()}, \code{get_beta_mu()}, \code{plot_beta_A()}
 }

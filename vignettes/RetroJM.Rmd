@@ -28,7 +28,7 @@ Y_i(t^*)=\beta_{\mu}(t^*)+A_i\beta_A(t^*)+X_i^T\psi_X+W_ib_i+\epsilon_i(t^*)
 $$
 where
 
-$t^*=D-t$, $D$ is death time and $t$ isthe prospective observation time.
+$t^*=D-t$, $D$ is death time and $t$ is the prospective observation time.
 
 The survival component is modeled using a Cox proportional hazards model. The hazard for death: 
 $$
@@ -42,12 +42,12 @@ For subjects with observed death times, the retrospective timescale is directly 
 To install the released version from CRAN, run:
 
 ```{r eval=FALSE}
-install.packages("RetroJM", repos = "http://cran.us.r-project.org")
+install.packages("TTM")
 ```
 
 To install the development version from GitHub, run:
 ```{r eval=FALSE}
-devtools::install_github("TChang-W/RetroJM")
+devtools::install_github("TChang-W/TTM")
 ```
 
 # Main function: RetroJM()
@@ -69,7 +69,7 @@ such as control/treatment.
 
 - `outcome`: Name of longitudinal measurement.
 
-- `covaraites`: Name of covariates. Default is NULL, meaning no covariates. 
+- `covariates`: Name of covariates. Default is NULL, meaning no covariates. 
 
 - `os_time`: Name of variable for event/censoring time. 
 
@@ -83,7 +83,7 @@ be a single character; If the input is wide format, it should be a character vec
 
 - `n_impute`: The number of imputations performed per censored subject.
 
-- `n_inner_knots`: The number of inner knots used to approximate the trajectories beta_mu and beta_A
+- `n_inner_knot`: The number of inner knots used to approximate the trajectories beta_mu and beta_A
 
 
 # Examples
@@ -91,11 +91,11 @@ be a single character; If the input is wide format, it should be a character vec
 ## Dataset
 The example datasets `Retro_data` is included in the package. They could be accessed by: 
 ```{r}
-library(RetroJM)
+library(TTM)
 
 data(Retro_data)
 ```
-The `Retro_data` is a long format data. It contains 100 subjects, 1 longitudinal measurement at 3 time points. 
+The `Retro_data` is a long format data set. It contains 1000 subjects with repeated measurements of one longitudinal outcome. 
 
 From the data, the name of longitudinal measurement is: `Y`, name of measured time are: `t_pros`, name of treatment assignment is: `A`, name of event/censoring time is `OS_time`, name of covariates are: `X1, X2`, name of ID variable is: `id`, name of death status is: `death`. We want to include a random intercept and a random slope for `A`: 
 
@@ -145,13 +145,13 @@ plot_beta_A(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.
 To evaluate the baseline trajectory $\beta_\mu(t*)$ at selected retrospective times:
 
 ```{r}
-get_beta_mu(new_times = 1:10, RetroJM_results = fit, conf.level = 0.95)
+get_beta_mu(new_times = 1:10, results = fit, conf.level = 0.95)
 ```
 
 To evaluate the baseline trajectory $\beta_A(t*)$ at selected retrospective times:
 
 ```{r}
-get_beta_A(new_times = 1:10, RetroJM_results = fit, conf.level = 0.95)
+get_beta_A(new_times = 1:10, results = fit, conf.level = 0.95)
 ```
 
 These functions return the estimated trajectory, pointwise standard error, and pointwise confidence interval at each requested time point.

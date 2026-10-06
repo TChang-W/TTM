@@ -10,32 +10,31 @@ get_beta_mu(new_times, results, conf.level = 0.95)
 \item{new_times}{A numeric vector of retrospective time points at which the
 baseline trajectory is to be evaluated.}
 
-\item{results}{A fitted object returned by `TTM()` or `RetroJM()`.}
+\item{results}{A fitted object returned by \code{TTM()} or \code{RetroJM()}.}
 
 \item{conf.level}{A numeric confidence level for the pointwise confidence
-interval. Must be strictly between `0` and `1`. The default is `0.95`.}
+interval. Must be strictly between \code{0} and \code{1}. The default is \code{0.95}.}
 }
 \value{
 A list containing:
 \describe{
-  \item{time_grid}{The user-supplied retrospective time points.}
-  \item{estimate}{The estimated baseline trajectory \eqn{\beta_{\mu}(t^*)}.}
-  \item{standard_error}{The pointwise standard error of the estimated trajectory.}
-  \item{CI.lower}{The lower bound of the pointwise confidence interval.}
-  \item{CI.upper}{The upper bound of the pointwise confidence interval.}
+\item{time_grid}{The user-supplied retrospective time points.}
+\item{estimate}{The estimated baseline trajectory \eqn{\beta_{\mu}(t^*)}.}
+\item{standard_error}{The pointwise standard error of the estimated trajectory.}
+\item{CI.lower}{The lower bound of the pointwise confidence interval.}
+\item{CI.upper}{The upper bound of the pointwise confidence interval.}
 }
 }
 \description{
 Evaluates the estimated baseline longitudinal trajectory on the retrospective
 timescale, denoted by \eqn{\beta_{\mu}(t^*)}, at user-supplied time points.
 Pointwise normal approximation confidence intervals are returned based on
-the weighted GEE fixed effect estimates from a fitted `TTM()` or `RetroJM()` object.
+the weighted GEE fixed effect estimates from a fitted \code{TTM()} or \code{RetroJM()} object.
 }
 \details{
 The baseline trajectory corresponds to the mean spline-based effect of
 retrospective time for the reference treatment group and baseline covariate
-pattern encoded by the model intercept-like term `X0` and spline terms.
-
+pattern encoded by the model intercept-like term \code{X0} and spline terms.
 
 For a fitted retrospective-time model of the form
 
@@ -46,10 +45,37 @@ E[Y(t^*)] = \beta_X^\top X +
 
 this function evaluates \eqn{\beta_{\mu}(t^*)} at specified \eqn{t^*}
 
-
 The spline basis is reconstructed using the boundary knots and internal knots
-stored in `results`, so the supplied `new_times` should be on the same
+stored in \code{results}, so the supplied \code{new_times} should be on the same
 retrospective-time scale as used when fitting the model.
 
 Confidence intervals are pointwise, not simultaneous.
+}
+\examples{
+\donttest{
+fit <- TTM(
+  data_long = TTM_data,
+  id = "id",
+  treatment = "A",
+  outcome = "Y",
+  covariates = c("X1", "X2"),
+  os_time = "OS_time",
+  event = "event",
+  t_pros = "t_pros"
+)
+
+baseline <- get_beta_mu(
+  new_times = seq(0, 10, by = 1),
+  results = fit,
+  conf.level = 0.95
+)
+
+baseline$estimate
+baseline$CI.lower
+baseline$CI.upper
+}
+
+}
+\seealso{
+\code{TTM()}, \code{get_beta_A()}, \code{plot_beta_mu()}
 }

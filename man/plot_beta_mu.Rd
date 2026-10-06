@@ -7,34 +7,34 @@
 plot_beta_mu(results, xlim = NULL, conf.level = 0.95)
 }
 \arguments{
-\item{results}{A fitted object returned by `TTM()` or `RetroJM()`.
+\item{results}{A fitted object returned by \code{TTM()} or \code{RetroJM()}.
 The object must contain spline knot information and the estimated fixed
 effects with their covariance matrix.}
 
 \item{xlim}{Optional numeric vector of length 2 giving the range of
-retrospective time to display. If `NULL`, the spline boundary range stored
-in `results` is used.}
+retrospective time to display. If \code{NULL}, the spline boundary range stored
+in \code{results} is used.}
 
 \item{conf.level}{Numeric scalar giving the confidence level for pointwise
-confidence intervals. Must be strictly between `0` and `1`.}
+confidence intervals. Must be strictly between \code{0} and \code{1}.}
 }
 \value{
 Invisibly returns a named list with components:
 \describe{
-  \item{plot}{The `ggplot2` plot object.}
-  \item{time_grid}{The retrospective time grid used for plotting.}
-  \item{estimate}{Estimated baseline trajectory values
-  \eqn{\beta_{\mu}(t^*)}.}
-  \item{standard_error}{Pointwise standard errors of the estimated baseline
-  trajectory.}
-  \item{CI.lower}{Lower pointwise confidence limits.}
-  \item{CI.upper}{Upper pointwise confidence limits.}
+\item{plot}{The \code{ggplot2} plot object.}
+\item{time_grid}{The retrospective time grid used for plotting.}
+\item{estimate}{Estimated baseline trajectory values
+\eqn{\beta_{\mu}(t^*)}.}
+\item{standard_error}{Pointwise standard errors of the estimated baseline
+trajectory.}
+\item{CI.lower}{Lower pointwise confidence limits.}
+\item{CI.upper}{Upper pointwise confidence limits.}
 }
 }
 \description{
 Plots the estimated baseline retrospective trajectory,
 \eqn{\beta_{\mu}(t^*)}, together with pointwise confidence intervals from a
-fitted `TTM()` or `RetroJM()` object.
+fitted \code{TTM()} or \code{RetroJM()} object.
 
 The plotted trajectory is formed from the intercept-like baseline term
 together with the spline terms in the fitted retrospective-time
@@ -48,13 +48,13 @@ retrospective time values and plots the estimated curve together with its
 lower and upper pointwise confidence limits.
 
 The spline basis is reconstructed using the boundary knots and internal knots
-stored in `results`, so the plotted time axis should be interpreted on the
+stored in \code{results}, so the plotted time axis should be interpreted on the
 same retrospective-time scale used when fitting the model.
 
 Confidence intervals are pointwise, not simultaneous.
 }
 \examples{
-\dontrun{
+\donttest{
 fit <- TTM(
   data_long = TTM_data,
   id = "id",
@@ -74,5 +74,5 @@ plot_beta_mu(
 }
 }
 \seealso{
-`TTM()`, `get_beta_mu()`, `plot_beta_A()`
+\code{TTM()}, \code{get_beta_mu()}, \code{plot_beta_A()}
 }

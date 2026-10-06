@@ -51,7 +51,7 @@
 ##' `TTM()`, `get_beta_mu()`, `plot_beta_A()`
 ##'
 ##' @examples
-##' \dontrun{
+##' \donttest{
 ##' fit <- TTM(
 ##'   data_long = TTM_data,
 ##'   id = "id",

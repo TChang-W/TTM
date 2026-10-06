@@ -14,12 +14,12 @@ RetroJM(
   death = "death",
   t_pros = "t_pros",
   random_effects = c("1", "A"),
-  jackknife_size = 50,
+  n_impute = 10,
   n_inner_knot = 3
 )
 }
 \arguments{
-\item{data_long}{A long-format `data.frame` containing one row per subject per visit.
+\item{data_long}{A long-format \code{data.frame} containing one row per subject per visit.
 The dataset must include the subject identifier, treatment variable,
 longitudinal outcome, survival time-to-event outcome, prospective follow-up time, and any
 baseline covariates used in the models.}
@@ -43,48 +43,48 @@ variable. This should represent observed event or censoring time on the
 prospective timescale.}
 
 \item{death}{A character string giving the name of the event indicator variable.
-This should typically be coded as `1` for death and `0` for censoring.}
+This should typically be coded as \code{1} for death and \code{0} for censoring.}
 
 \item{t_pros}{A character string giving the name of the prospective follow-up
 time variable for each longitudinal observation. This is used together with
 survival time to define retrospective time from death or imputed death.}
 
 \item{random_effects}{A character vector specifying the random effects terms to
-include in the linear mixed effects model. For example, `c("1", "A")`
+include in the linear mixed effects model. For example, \code{c("1", "A")}
 specifies a random intercept and a random slope for treatment.}
-
-\item{n_inner_knot}{A positive integer giving the number of internal knots used
-for the natural spline basis that models the retrospective time trend in the
-longitudinal submodel. Increased number of knots may improve the model capacity
-to capture complicated trajectories at the risk of capturing noises.}
 
 \item{n_impute}{A positive integer giving the number of imputed death times, and
 therefore the number of imputed datasets, to generate for censored subjects.
 Larger values generally improve stability of pooled estimates at the cost of
 increased computation time.}
+
+\item{n_inner_knot}{A positive integer giving the number of internal knots used
+for the natural spline basis that models the retrospective time trend in the
+longitudinal submodel. Increased number of knots may improve the model capacity
+to capture complicated trajectories at the risk of capturing noises.}
 }
 \value{
 A named list with components:
 \describe{
-  \item{survival_formula}{The survival model formula used in the Cox model.}
-  \item{survival_model}{The fitted `survival::coxph` object from stage 1.}
-  \item{longitudinal_formula}{The linear mixed effects model formula used in stage 2.}
-  \item{imputed_death_times}{A matrix of imputed death times for censored subjects,
-  with one column per imputation and one row per censored subject.}
-  \item{pooled_longitudinal_model}{A list containing pooled results from the
-  longitudinal mixed effects models:
-  \describe{
-    \item{fixed_effects}{Pooled fixed effects estimates.}
-    \item{fixed_effects_vcov}{Pooled covariance matrix of the fixed effects estimates.}
-    \item{residual_variance}{Average residual variance across imputations.}
-    \item{random_effects_covariance}{Average random effects covariance parameters
-    across imputations.}
-  }}
-  \item{spline_boundary_knots}{Boundary knots used for the natural spline basis.}
-  \item{spline_inner_knots}{Internal knots used for the natural spline basis.}
-  \item{n_inner_knots}{The number of internal knots used.}
-  \item{variable_name_map}{A lookup table showing original variable names and any
-  internally transformed names used during preprocessing.}
+\item{survival_formula}{The survival model formula used in the Cox model.}
+\item{survival_model}{The fitted \code{survival::coxph} object from stage 1.}
+\item{longitudinal_formula}{The linear mixed effects model formula used in stage 2.}
+\item{imputed_death_times}{A matrix of imputed death times for censored subjects,
+with one column per imputation and one row per censored subject.}
+\item{pooled_longitudinal_model}{A list containing pooled results from the
+longitudinal mixed effects models:
+\describe{
+\item{fixed_effects}{Pooled fixed effects estimates.}
+\item{fixed_effects_vcov}{Pooled covariance matrix of the fixed effects estimates.}
+\item{residual_variance}{Average residual variance across imputations.}
+\item{random_effects_covariance}{Average random effects covariance parameters
+across imputations.}
+}}
+\item{spline_boundary_knots}{Boundary knots used for the natural spline basis.}
+\item{spline_inner_knots}{Internal knots used for the natural spline basis.}
+\item{n_inner_knots}{The number of internal knots used.}
+\item{variable_name_map}{A lookup table showing original variable names and any
+internally transformed names used during preprocessing.}
 }
 }
 \description{
@@ -120,7 +120,7 @@ linear mixed effects model is fit to the longitudinal outcome.
 
 The longitudinal model includes treatment, baseline covariates, spline terms
 for retrospective time, and treatment-by-spline interactions. Random effects
-are included according to `random_effects` by user specification.
+are included according to \code{random_effects} by user specification.
 
 Fixed effects estimates and covariance matrices from the mixed models are pooled
 across imputations using Rubin-style combining rules. Variance components are
@@ -128,18 +128,18 @@ summarized by simple averaging across imputations.
 
 This function assumes that:
 \itemize{
-  \item `data_long` is in long format, with repeated outcome measurements per subject,
-  \item survival and censoring information are available at the subject level,
-  \item the longitudinal outcome is observed prior to death or censoring,
-  \item covariates included in the models are measured consistently across rows.
+\item \code{data_long} is in long format, with repeated outcome measurements per subject,
+\item survival and censoring information are available at the subject level,
+\item the longitudinal outcome is observed prior to death or censoring,
+\item covariates included in the models are measured consistently across rows.
 }
 }
 \examples{
-\dontrun{
+\donttest{
 library(TTM)
 data("Retro_data", package = "TTM")
 
-fit <- TTM(
+fit <- RetroJM(
   data_long = Retro_data,
   id = "id",
   treatment = "A",
@@ -156,11 +156,11 @@ fit <- TTM(
 fit$pooled_longitudinal_model$fixed_effects
 fit$pooled_longitudinal_model$fixed_effects_vcov
 
-##' plot_beta_mu(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
+plot_beta_mu(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
 plot_beta_A(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
 
-get_beta_mu(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
-get_beta_A(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
+get_beta_mu(new_times = 1:10, results = fit, conf.level = 0.95)
+get_beta_A(new_times = 1:10, results = fit, conf.level = 0.95)
 }
 
 

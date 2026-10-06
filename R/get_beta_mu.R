@@ -39,6 +39,33 @@
 ##'   \item{CI.upper}{The upper bound of the pointwise confidence interval.}
 ##' }
 ##'
+##' @seealso
+##' `TTM()`, `get_beta_A()`, `plot_beta_mu()`
+##'
+##' @examples
+##' \donttest{
+##' fit <- TTM(
+##'   data_long = TTM_data,
+##'   id = "id",
+##'   treatment = "A",
+##'   outcome = "Y",
+##'   covariates = c("X1", "X2"),
+##'   os_time = "OS_time",
+##'   event = "event",
+##'   t_pros = "t_pros"
+##' )
+##'
+##' baseline <- get_beta_mu(
+##'   new_times = seq(0, 10, by = 1),
+##'   results = fit,
+##'   conf.level = 0.95
+##' )
+##'
+##' baseline$estimate
+##' baseline$CI.lower
+##' baseline$CI.upper
+##' }
+##'
 ##' @export
 get_beta_mu <- function(new_times, results, conf.level = 0.95) {
   res <- NULL

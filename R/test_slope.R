@@ -1,13 +1,35 @@
-##' IMPORTANT: This function is for TTM_linear object with B-spline only.
-##' Compute the change in slope of the either baseline trajectory or treatment-effect
-##' around a knot and test its significance.
+##' Test for a change in slope at a knot of a linear-spline trajectory
+##'
+##' Computes the change in slope of either the baseline trajectory or the
+##' treatment-effect trajectory around a knot and tests its significance.
+##' This function is for `TTM_linear()` fits with a B-spline basis
+##' (`spline_type = "bs"`) only.
 ##'
 ##' @param new_times Numeric vector of knot positions. Needs to be of length 3 where the
 ##'   middle value is the knot and the other two values are slightly before and after the knot.
 ##' @param fit A fitted `TTM_linear()` object
 ##' @param var_name   Either `"X0"` (baseline trajectory beta_mu) or
 ##' `"A"` (treatment effect trajectory beta_A)
-##' @return A data.frame with slope1, slope2, diff, se_diff, p_value
+##' @return A data.frame with columns `slope1` (slope before the knot),
+##'   `slope2` (slope after the knot), `diff` (`slope2 - slope1`), `se_diff`
+##'   (standard error of `diff`), and `p_value` (two-sided Wald test p-value).
+##' @examples
+##' \donttest{
+##' fit_linear <- TTM_linear(
+##'   data_long = TTM_data,
+##'   id = "id",
+##'   treatment = "A",
+##'   outcome = "Y",
+##'   covariates = c("X1", "X2"),
+##'   os_time = "OS_time",
+##'   event = "event",
+##'   t_pros = "t_pros",
+##'   knots = 6,
+##'   spline_type = "bs"
+##' )
+##' test_beta_slope(new_times = c(5, 6, 7), fit = fit_linear, var_name = "X0")
+##' test_beta_slope(new_times = c(5, 6, 7), fit = fit_linear, var_name = "A")
+##' }
 ##' @export
 test_beta_slope <- function(new_times, fit, var_name) {
   res_df <- data.frame()
@@ -68,14 +90,16 @@ test_beta_slope <- function(new_times, fit, var_name) {
   return(res_df)
 }
 
-##' Wrapper for the baseline trajectory (beta_mu) -------------------------------
+##' Wrapper for the baseline trajectory (beta_mu)
+##' @noRd
 test_beta_mu_slope <- function(nknots, fit) {
   k_vec <- if (is.list(fit)) fit[[1]]$spline_inner_knots else fit$spline_inner_knots
   new_times <- c(k_vec[1] - 0.1, k_vec[1], k_vec[1] + 0.1)
   test_beta_slope(new_times, fit, var_name = "X0")
 }
 
-##' Wrapper for the treatment effect trajectory (beta_A) -----------------------
+##' Wrapper for the treatment effect trajectory (beta_A)
+##' @noRd
 test_beta_A_slope <- function(nknots, fit) {
   k_vec <- if (is.list(fit)) fit[[1]]$spline_inner_knots else fit$spline_inner_knots
   new_times <- c(k_vec[1] - 0.1, k_vec[1], k_vec[1] + 0.1)

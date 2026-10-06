@@ -1,3 +1,8 @@
+# Script used to simulate the example data sets shipped in data/.
+# It is kept out of the package build (see .Rbuildignore) and is not run
+# when the package is installed. Save the result with, e.g.,
+# save(TTM_data, file = "data/TTM_data.rda", compress = "xz")
+
 # Include independent censoring
 # Censoring time is a mixture of exponential and truncated normal
 

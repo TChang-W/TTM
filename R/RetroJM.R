@@ -121,11 +121,11 @@
 ##' @importFrom survival Surv survSplit coxph basehaz
 ##'
 ##' @examples
-##' \dontrun{
+##' \donttest{
 ##' library(TTM)
 ##' data("Retro_data", package = "TTM")
 ##'
-##' fit <- TTM(
+##' fit <- RetroJM(
 ##'   data_long = Retro_data,
 ##'   id = "id",
 ##'   treatment = "A",
@@ -142,11 +142,11 @@
 ##' fit$pooled_longitudinal_model$fixed_effects
 ##' fit$pooled_longitudinal_model$fixed_effects_vcov
 ##'
-##' ##' plot_beta_mu(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
+##' plot_beta_mu(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
 ##' plot_beta_A(fit, xlim = c(0, quantile(Retro_data$OS_time, 0.7)), conf.level = 0.95)
 ##'
-##' get_beta_mu(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
-##' get_beta_A(new_times = 1:10, TTM_results = fit, conf.level = 0.95)
+##' get_beta_mu(new_times = 1:10, results = fit, conf.level = 0.95)
+##' get_beta_A(new_times = 1:10, results = fit, conf.level = 0.95)
 ##' }
 ##'
 ##'
@@ -160,7 +160,7 @@ RetroJM <- function(data_long,
                     death = "death",
                     t_pros = "t_pros",
                     random_effects = c("1", "A"),
-                    jackknife_size = 50,
+                    n_impute = 10,
                     n_inner_knot = 3) {
   data_out = clean_data(data_long,
                         id = id,
@@ -293,7 +293,7 @@ RetroJM <- function(data_long,
       )
     time_grid <- data_combined$t_retro_imputed
     data_combined_Boundary.knots <- range(death_imputed)
-    data_combined_knots = quantile(death_imputed, (1:n_inner_knot) / (n_inner_knot + 1), na.rm = T)
+    data_combined_knots = quantile(death_imputed, (1:n_inner_knot) / (n_inner_knot + 1), na.rm = TRUE)
 
     data_spline <- splines::ns(
       time_grid,
