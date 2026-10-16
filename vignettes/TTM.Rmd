@@ -1,6 +1,6 @@
 ---
 title: "Introduction to TTM"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to TTM}
   %\VignetteEngine{knitr::rmarkdown}

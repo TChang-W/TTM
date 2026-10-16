@@ -1,6 +1,6 @@
 ---
 title: "Introduction to RetroJM"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to RetroJM}
   %\VignetteEngine{knitr::rmarkdown}
