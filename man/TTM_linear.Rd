@@ -45,7 +45,7 @@ treated as neither death nor dropout.}
 \item{t_pros}{Character scalar giving the prospective follow-up time column
 name.}
 
-\item{knots}{pre-specified knots. If null, the knot is selected automatically}
+\item{knots}{Knots specified in advance. If null, the knot is selected automatically}
 
 \item{jk_block_size}{Positive integer giving the number of delete-group
 jackknife groups used to estimate coefficient variability. Must be greater

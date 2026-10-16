@@ -24,7 +24,7 @@ This perspective is useful when the scientific question concerns how a longitudi
 
 The longitudinal model is: 
 $$
-Y_i(t^*)=\beta_{\mu}(t^*)+A_i\beta_A(t^*)+X_i^T\psi_X+W_ib_i+\epsilon_i(t^*)
+Y_i(t^*)=\beta_{\mu}(t^*)+A_i\beta_A(t^*)+X_i^T\psi_X+W_i b_i+\epsilon_i(t^*)
 $$
 where
 

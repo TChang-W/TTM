@@ -30,7 +30,7 @@
 ##'   treated as neither death nor dropout.
 ##' @param t_pros Character scalar giving the prospective follow-up time column
 ##'   name.
-##' @param knots pre-specified knots. If null, the knot is selected automatically
+##' @param knots Knots specified in advance. If null, the knot is selected automatically
 ##' @param jk_block_size Positive integer giving the number of delete-group
 ##'   jackknife groups used to estimate coefficient variability. Must be greater
 ##'   than 1.
