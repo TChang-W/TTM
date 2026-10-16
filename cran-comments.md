@@ -12,7 +12,10 @@ This is a new submission.
 
 ## Test environments
 
-* local Ubuntu 24.04, R 4.6.1: `R CMD check --as-cran`
+* local Windows 11 x64, R 4.4.2
+* win-builder: R-devel (2026-10-14 r90673 ucrt)
+* R-hub: ubuntu-release (R 4.6.1)
+* R-hub: donttest (Linux, R-devel, examples run with `--run-donttest`)
 
 ## Notes for reviewers
 
