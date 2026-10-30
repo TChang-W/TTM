@@ -4,7 +4,7 @@ get_weights <- function(dat, dropout_formula){
   censor_OS <- sort(unique(dat$OS_time[dat$event == 0]))
 
   dropout_model <- survival::coxph(dropout_formula, data = dat, x = TRUE, y = TRUE)
-  drop_basehaz <- survival::basehaz(dropout_model, centered = FALSE)
+  drop_basehaz <- survival::basehaz(dropout_model, centered = TRUE)
 
   id_vec <- unique(data_death$id)
   drop_cumu_haz_vec <- numeric(length(id_vec))
